@@ -1,24 +1,25 @@
 <script>
     import { tick } from "svelte";
     import { marked } from "marked";
+    // Import the environment variable for the API URL
+    import { public_env } from '$env/static/public'; 
 
-    // Svelte 5 Runes for reactivity
     let messages = $state([
         {
             role: "assistant",
-            content:
-                "Selam! I am Adwa AI. Ask me anything about the Battle of Adwa and the people behind Ethiopia’s historic victory.",
+            content: "Selam! I am Adwa AI. Ask me anything about the Battle of Adwa and the people behind Ethiopia’s historic victory.",
         },
     ]);
     let input = $state("");
     let isTyping = $state(false);
 
-    // Auto-scroll effect
+    // Dynamic API URL: Use the Env Variable if it exists, otherwise fallback to localhost
+    const API_BASE_URL = public_env.PUBLIC_API_URL || "http://localhost:8000";
+
     $effect(() => {
-        messages.length; // Dependency: runs when message count changes
+        messages.length;
         const container = document.querySelector(".custom-scrollbar");
         if (container) {
-            // tick() ensures Svelte has finished rendering the new bubble before scrolling
             tick().then(() => {
                 container.scrollTo({
                     top: container.scrollHeight,
@@ -37,34 +38,22 @@
         isTyping = true;
 
         try {
-            const url = `http://localhost:8000/response/?question=${encodeURIComponent(question)}`;
+            // FIXED: Using the dynamic API_BASE_URL
+            const url = `${API_BASE_URL}/response/?question=${encodeURIComponent(question)}`;
             const res = await fetch(url);
 
             if (!res.ok) throw new Error("Failed to connect to backend");
 
             const data = await res.json();
 
-            // Robust extraction for different backend shapes:
-            // - text may appear as data.answer.answer OR data.answer (string)
-            // - sources may appear as data.source.source OR data.sources OR data.source (array)
+            // Your robust extraction logic remains the same...
             const replyText =
-                (data &&
-                    typeof data === "object" &&
-                    data.answer &&
-                    typeof data.answer === "object" &&
-                    data.answer.answer) ||
-                (data && typeof data.answer === "string" && data.answer) ||
-                (data && typeof data === "string" && data) ||
-                "";
+                (data?.answer?.answer) ||
+                (typeof data?.answer === "string" && data.answer) ||
+                (typeof data === "string" && data) ||
+                "I couldn't process that response.";
 
-            const sources =
-                (data &&
-                    data.source &&
-                    Array.isArray(data.source.source) &&
-                    data.source.source) ||
-                (data && Array.isArray(data.sources) && data.sources) ||
-                (data && Array.isArray(data.source) && data.source) ||
-                [];
+            const sources = data?.source?.source || data?.sources || data?.source || [];
 
             messages.push({
                 role: "assistant",
@@ -76,7 +65,7 @@
             console.error("Fetch error:", error);
             messages.push({
                 role: "assistant",
-                content: "⚠️ Connection error. Is the Django server running?",
+                content: "⚠️ Connection error. Please try again in a moment.",
             });
         } finally {
             isTyping = false;
