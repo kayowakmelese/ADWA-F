@@ -1,6 +1,6 @@
 <script>
     import { marked } from "marked";
-    import { PUBLIC_API_URL } from '$env/static/public';
+    import { env } from ‘$env/dynamic/public’;
 
     let messages = $state([
         {
@@ -11,7 +11,7 @@
     let input = $state("");
     let isTyping = $state(false);
 
-    const API_BASE_URL = PUBLIC_API_URL || "http://localhost:8000";
+    const API_BASE_URL = env.PUBLIC_API_URL || "http://localhost:8000";
 
     $effect(() => {
         messages.length;
