@@ -1,8 +1,7 @@
 <script>
     import { tick } from "svelte";
     import { marked } from "marked";
-    // Import the environment variable for the API URL
-    import { public_env } from '$env/static/public'; 
+    import { env } from '$env/dynamic/public';
 
     let messages = $state([
         {
