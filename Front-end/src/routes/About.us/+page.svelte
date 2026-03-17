@@ -1,10 +1,10 @@
 <script>
   // Reactive variables
-  let name = '';
-  let email = '';
-  let feed = '';
-  let statusMessage = '';
-  let isSending = false;
+  let name = $state('');
+  let email = $state('');
+  let feed = $state('');
+  let statusMessage = $state('');
+  let isSending = $state(false);
 
   // Refs for manual DOM clearing (fallback)
   let nameInput, emailInput, feedInput;
@@ -161,7 +161,7 @@
             </div>
 
             <!-- Form with manual refs for fallback clearing -->
-            <form on:submit={sendFeedback} class="space-y-4">
+            <form onsubmit={sendFeedback} class="space-y-4">
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <input
                         type="text"

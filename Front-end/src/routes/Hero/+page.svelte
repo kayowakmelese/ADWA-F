@@ -165,8 +165,10 @@ Balcha Safo continued to serve Ethiopia in various military and administrative r
   </section>
 
   {#if selected}
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent backdrop-blur-sm" onclick={closeHero}>
-      <aside class="relative max-w-2xl w-full bg-black p-8 rounded-3xl border border-white/10" onclick={(e) => e.stopPropagation()}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent backdrop-blur-sm" role="button" tabindex="0" onclick={closeHero} onkeydown={(e) => e.key === 'Enter' && closeHero()}>
+      <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+      <aside class="relative max-w-2xl w-full bg-black p-8 rounded-3xl border border-white/10" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
         <div class="flex flex-col md:flex-row gap-6">
           <img src={selected.img} alt={selected.name} class="w-32 h-32 rounded-xl object-cover" />
           <div>

@@ -1,7 +1,7 @@
 <script>
-    import { tick } from "svelte";
     import { marked } from "marked";
-    import { env } from '$env/dynamic/public';
+    // Import the environment variable for the API URL
+    import { public_env } from '$env/static/public'; 
 
     let messages = $state([
         {
@@ -12,14 +12,13 @@
     let input = $state("");
     let isTyping = $state(false);
 
-    // Dynamic API URL: Use the Env Variable if it exists, otherwise fallback to localhost
-    const API_BASE_URL = public_env.PUBLIC_API_URL || "http://localhost:8000";
+    const API_BASE_URL = PUBLIC_API_URL || "http://localhost:8000";
 
     $effect(() => {
         messages.length;
         const container = document.querySelector(".custom-scrollbar");
         if (container) {
-            tick().then(() => {
+            queueMicrotask(() => {
                 container.scrollTo({
                     top: container.scrollHeight,
                     behavior: "smooth",
